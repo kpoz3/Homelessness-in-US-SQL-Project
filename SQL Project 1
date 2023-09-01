@@ -1,0 +1,65 @@
+SELECT*
+FROM  new_schema.homelessness;
+
+/* As I am focusing on 50 states, there was an uncessary row (#8) so I proceeded to delete it. */
+DELETE FROM new_schema.homelessness
+WHERE state = 'District of Columbia';
+
+/* Because I deleted row #8, the numerical sequence is out of order(5,6,7,9,10,11, etc.). Therefore, I created auto increment to be in ASC. */
+
+SELECT ROW_NUMBER() OVER (ORDER BY state ASC) AS No, 
+		region, state, individuals, family_members, state_pop
+FROM new_schema.homelessness;
+
+/* The objective is discover which state has the max/min of homelessness */
+SELECT SUM(individuals)
+FROM new_schema.homelessness;
+
+SELECT SUM(family_members)
+FROM new_schema.homelessness;
+
+SELECT MAX(Total_people) AS max_of_homelessness
+FROM (
+SELECT state , SUM(individuals + family_members) AS Total_people
+FROM new_schema.homelessness
+GROUP BY state
+) AS total;
+
+
+SELECT MIN(Total_people) AS max_of_homelessness
+FROM (
+SELECT state , SUM(individuals + family_members) AS Total_people
+FROM new_schema.homelessness
+GROUP BY state
+) as total;
+
+
+
+
+
+
+
+
+
+ALTER TABLE new_schema.homelessness
+RENAME COLUMN state_number TO number_rows;
+
+UPDATE new_schema.homelessness
+SET number_rows = state_number;
+
+INSERT INTO new_schema.homelessness (state_number)
+VALUES number_rows;
+
+ALTER TABLE new_schema.homelessness
+RENAME COLUMN state_number TO number_rows;
+
+ALTER TABLE new_schema.homelessness
+RENAME COLUMN number_rows TO state_number;
+
+ALTER TABLE new_schema.homelessness
+ADD state_number INT;
+
+ALTER TABLE new_schema.homelessness
+DROP state_number;
+
+
