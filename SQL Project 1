@@ -25,7 +25,6 @@ FROM new_schema.homelessness
 GROUP BY state
 ) AS total;
 
-
 SELECT MIN(Total_people) AS max_of_homelessness
 FROM (
 SELECT state , SUM(individuals + family_members) AS Total_people
