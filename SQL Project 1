@@ -25,9 +25,33 @@ FROM new_schema.homelessness
 GROUP BY state
 ) AS total;
 
-SELECT MIN(Total_people) AS max_of_homelessness
+SELECT MIN(Total_people) AS min_of_homelessness
 FROM (
 SELECT state , SUM(individuals + family_members) AS Total_people
 FROM new_schema.homelessness
 GROUP BY state
 ) as total;
+
+/* Now that I know the the total of max/min of homelessness. I want to know what state is alligned with that total. */
+
+SELECT MAX(Total_people) AS max_of_homelessness , State
+FROM (
+SELECT state , SUM(individuals + family_members) AS Total_people
+FROM new_schema.homelessness
+GROUP BY State
+) AS total
+GROUP BY State
+ORDER BY max_of_homelessness DESC
+LIMIT 1;
+
+
+SELECT MIN(Total_people) AS min_of_homelessness , State
+FROM (
+SELECT state , SUM(individuals + family_members) AS Total_people
+FROM new_schema.homelessness
+GROUP BY State
+) as total
+GROUP BY State
+ORDER BY min_of_homelessness ASC
+LIMIT 2;
+
